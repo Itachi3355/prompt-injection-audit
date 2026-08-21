@@ -4,6 +4,8 @@ referenced files exist, evals parse. Run: python validate.py"""
 import json
 import pathlib
 import re
+import shutil
+import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).parent
@@ -87,6 +89,17 @@ for path in sorted(ROOT.glob("evals/*.json")):
             check(ev.get(field), f"{rel}: eval {eid!r} missing `{field}`")
         check(eid not in seen, f"{rel}: duplicate eval id {eid!r}")
         seen.add(eid)
+
+# --- native manifest check (skipped when the CLI is unavailable, e.g. in CI) ---
+if shutil.which("claude"):
+    r = subprocess.run(
+        ["claude", "plugin", "validate", str(ROOT)],
+        capture_output=True, text=True,
+    )
+    if r.returncode != 0:
+        errors.append("claude plugin validate failed:\n" + (r.stdout + r.stderr).strip())
+else:
+    print("note: `claude` CLI not found, skipping native manifest validation")
 
 if errors:
     print("FAIL")
