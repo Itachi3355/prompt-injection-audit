@@ -7,7 +7,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: python validate.py
+      - name: version bump required when packaged content changes
+        run: |
+          git rev-parse HEAD~1 >/dev/null 2>&1 || exit 0
+          if git diff --quiet HEAD~1 HEAD -- skills/ .claude-plugin/; then
+            echo "no packaged content changed"; exit 0
+          fi
+          ver() { python -c 'import json,sys;print(json.load(sys.stdin)["version"])'; }
+          old=$(git show HEAD~1:.claude-plugin/plugin.json | ver)
+          new=$(ver < .claude-plugin/plugin.json)
+          if [ "$old" = "$new" ]; then
+            echo "::error::skills/ or .claude-plugin/ changed but plugin.json version is still $new. \`claude plugin update\` keys on this field, so already-installed copies will silently keep the old content. Bump it."
+            exit 1
+          fi
+          echo "version $old -> $new"

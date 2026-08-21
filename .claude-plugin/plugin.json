@@ -2,12 +2,18 @@
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "prompt-injection-audit",
   "description": "Red-teams AI systems you own for prompt-injection and tool-poisoning weaknesses and produces a prioritized findings report with architectural fixes.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "Itachi3355",
     "url": "https://github.com/Itachi3355"
   },
   "homepage": "https://github.com/Itachi3355/prompt-injection-audit",
   "license": "MIT",
-  "keywords": ["ai-safety", "llm-security", "prompt-injection", "red-teaming", "owasp"]
+  "keywords": [
+    "ai-safety",
+    "llm-security",
+    "prompt-injection",
+    "red-teaming",
+    "owasp"
+  ]
 }
