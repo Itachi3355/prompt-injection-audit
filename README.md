@@ -17,17 +17,25 @@ Given an AI system (system prompt, tool/function definitions, RAG pipeline, MCP 
 
 ## Covered attack classes
 
-Direct injection · indirect/retrieved injection (XPIA) · tool poisoning · line-jumping · output-as-instruction · multi-turn persistence · exfiltration payloads · downstream command/SQL injection · confused-deputy / excessive agency. See [`references/attack-taxonomy.md`](references/attack-taxonomy.md).
+Direct injection · indirect/retrieved injection (XPIA) · tool poisoning · line-jumping · output-as-instruction · multi-turn persistence · exfiltration payloads · downstream command/SQL injection · confused-deputy / excessive agency. See [`references/attack-taxonomy.md`](skills/prompt-injection-audit/references/attack-taxonomy.md).
 
 ## Install
 
-**Claude.ai / Claude app:** upload `prompt-injection-audit.skill` in a chat and tap **Save skill**.
+**Claude Code (plugin, recommended):**
 
-**Claude Code:**
-```bash
-git clone https://github.com/Itachi3355/prompt-injection-audit.git
-cp -r prompt-injection-audit ~/.claude/skills/prompt-injection-audit
 ```
+/plugin marketplace add Itachi3355/prompt-injection-audit
+```
+
+Then `/plugin install prompt-injection-audit@prompt-injection-audit`.
+
+**Claude Code (skill directory):**
+
+```bash
+git clone --depth 1 https://github.com/Itachi3355/prompt-injection-audit.git /tmp/pia && cp -r /tmp/pia/skills/prompt-injection-audit ~/.claude/skills/
+```
+
+**Claude.ai / Claude app:** download the repo (**Code → Download ZIP**), unzip it, re-zip the inner `skills/prompt-injection-audit` folder, then upload that `.zip` in a chat and tap **Save skill**. The skill folder must be the zip root.
 
 ## Usage
 
@@ -38,20 +46,23 @@ Point it at a system you own:
 - "Threat-model my RAG pipeline's injection surface"
 - "Is my agent vulnerable to indirect injection?"
 
-A full worked Findings Report is in [`examples/findings-report.md`](examples/findings-report.md).
+Worked Findings Reports (RAG support agent, third-party MCP server) are in [`examples/findings-report.md`](examples/findings-report.md).
 
 ## Repo structure
 
 ```
 prompt-injection-audit/
-├── SKILL.md                       # workflow + Findings Report format + authorized-use boundary
-├── references/
-│   ├── attack-taxonomy.md         # 9 attack classes with mechanisms
-│   ├── probe-templates.md         # diagnostic probes per surface (safe vs fail signal)
-│   ├── severity-rubric.md         # Critical/High/Medium/Low rating
-│   └── defenses.md                # architectural mitigations, strongest-first
+├── skills/prompt-injection-audit/
+│   ├── SKILL.md                   # workflow + Findings Report format + authorized-use boundary
+│   └── references/
+│       ├── attack-taxonomy.md     # 9 attack classes with mechanisms
+│       ├── probe-templates.md     # diagnostic probes per surface (safe vs fail signal)
+│       ├── severity-rubric.md     # Critical/High/Medium/Low rating
+│       └── defenses.md            # architectural mitigations, strongest-first
+├── .claude-plugin/                # plugin.json + marketplace.json (Claude Code install)
 ├── evals/evals.json               # regression test prompts
-├── examples/findings-report.md    # worked audit output
+├── examples/findings-report.md    # worked audit outputs
+├── validate.py                    # repo self-check, run in CI on every push
 └── LICENSE                        # MIT
 ```
 
@@ -59,7 +70,7 @@ prompt-injection-audit/
 
 Most "prompt injection defense" advice stops at "add a line to your system prompt." This skill is built on the opposite premise: **prompt-level patches are the weakest layer.** It pushes architectural fixes — the data/instruction boundary, least-privilege credentials, human approval on state-changing tools, safe downstream execution — because those are what actually contain the blast radius. It pairs naturally with [verify-ai-output](https://github.com/Itachi3355/verify-ai-output) as part of a practical AI-safety tooling set.
 
-Contributions welcome — new attack patterns for the taxonomy and adversarial test cases for `evals/` especially.
+Contributions welcome — new attack patterns for the taxonomy and adversarial test cases for `evals/` especially. Run `python validate.py` before opening a PR.
 
 ## License
 

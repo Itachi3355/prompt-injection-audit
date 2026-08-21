@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "prompt-injection-audit",
+  "description": "Agent Skill for red-teaming your own AI systems against prompt injection and tool poisoning.",
+  "owner": {
+    "name": "Itachi3355",
+    "url": "https://github.com/Itachi3355"
+  },
+  "plugins": [
+    {
+      "name": "prompt-injection-audit",
+      "description": "Audit an AI system you own for prompt-injection and tool-poisoning vulnerabilities.",
+      "source": "./",
+      "category": "security"
+    }
+  ]
+}
