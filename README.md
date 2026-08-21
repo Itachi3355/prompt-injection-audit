@@ -39,7 +39,20 @@ git clone --depth 1 https://github.com/Itachi3355/prompt-injection-audit.git /tm
 
 ## Usage
 
-Point it at a system you own:
+Invoke it explicitly, then describe the system you own:
+
+```
+/prompt-injection-audit
+```
+
+**Explicit invocation is the reliable entry point.** Auto-invocation from a bare
+description of your system is not dependable — Claude will often answer the
+security question directly, which yields useful advice with none of the Findings
+Report structure (severity ratings, evidence, per-finding fixes, limits). If you
+get a free-form reply, name the skill. Verified in testing on the sibling
+[verify-ai-output](https://github.com/Itachi3355/verify-ai-output) skill.
+
+These phrasings will sometimes trigger it unprompted:
 
 - "Audit my customer-support agent for prompt injection"
 - "Review these MCP tool definitions for tool poisoning"
